@@ -79,7 +79,7 @@ export const head: DocumentHead = {
     },
     {
       property: "og:image",
-      content: "https://hca-account.vercel.app/hca_acc.png",
+      content: "https://hca-account.vercel.app/hca_acc.webp",
     },
     {
       property: "og:image:alt",
