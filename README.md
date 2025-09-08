@@ -154,13 +154,13 @@ Higher Career Academy's School Management System implements rigorous security me
 4. **Start development servers:**
    ```bash
    # Marketing portal
-   cd marketing-portal && npm run dev
+   cd marketing-portal && bun dev
    
    # Auth service
-   cd auth-service && npm run dev
+   cd auth-service && bun dev
    
    # API service
-   cd api-service && npm run dev
+   cd api-service && bun dev
    ```
 
 ### Production Deployment
@@ -204,3 +204,47 @@ This project is proprietary software owned by Higher Career Academy. Unauthorize
 ---
 
 © 2023 Higher Career Academy. All rights reserved.
+
+## Vercel Edge
+
+This starter site is configured to deploy to [Vercel Edge Functions](https://vercel.com/docs/concepts/functions/edge-functions), which means it will be rendered at an edge location near to your users.
+
+## Installation
+
+The adaptor will add a new `vite.config.ts` within the `adapters/` directory, and a new entry file will be created, such as:
+
+```
+└── adapters/
+    └── vercel-edge/
+        └── vite.config.ts
+└── src/
+    └── entry.vercel-edge.tsx
+```
+
+Additionally, within the `package.json`, the `build.server` script will be updated with the Vercel Edge build.
+
+## Production build
+
+To build the application for production, use the `build` command, this command will automatically run `bun build.server` and `bun build.client`:
+
+```shell
+bun build
+```
+
+[Read the full guide here](https://github.com/QwikDev/qwik/blob/main/starters/adapters/vercel-edge/README.md)
+
+## Dev deploy
+
+To deploy the application for development:
+
+```shell
+bun deploy
+```
+
+Notice that you might need a [Vercel account](https://docs.Vercel.com/get-started/) in order to complete this step!
+
+## Production deploy
+
+The project is ready to be deployed to Vercel. However, you will need to create a git repository and push the code to it.
+
+You can [deploy your site to Vercel](https://vercel.com/docs/concepts/deployments/overview) either via a Git provider integration or through the Vercel CLI.
