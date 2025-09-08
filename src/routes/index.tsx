@@ -37,13 +37,102 @@ export default component$(() => {
 });
 
 
+
 export const head: DocumentHead = {
-  title: 'HCA | Accounts and School Management System',
+  title: "HCA | Accounts and School Management System",
   meta: [
     {
-      name: 'description',
-      content: 'Secure login portal for HigherCareer Academy’s Accounts and School Management System. Manage students, staff, admissions, and finances in one place.',
+      name: "description",
+      content:
+        "Secure login portal for HigherCareer Academy’s Accounts and School Management System. Manage students, staff, admissions, and finances in one place.",
+    },
+    {
+      name: "keywords",
+      content:
+        "School Management System, Accounts, Student Portal, Teacher Portal, Parent Portal, HigherCareer Academy, Admissions, Finance, Qwik App, Tanzania",
+    },
+    {
+      name: "author",
+      content: "HigherCareer Academy",
+    },
+    {
+      name: "robots",
+      content: "index, follow",
+    },
+    // Open Graph / Facebook
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:url",
+      content: "https://hca-account.vercel.app/",
+    },
+    {
+      property: "og:title",
+      content: "HCA | Accounts and School Management System",
+    },
+    {
+      property: "og:description",
+      content:
+        "Centralized school management system for HigherCareer Academy. Manage students, teachers, parents, admissions, and finances with ease.",
+    },
+    {
+      property: "og:image",
+      content: "https://hca-account.vercel.app/hca_acc.png",
+    },
+    {
+      property: "og:image:alt",
+      content: "HigherCareer Academy - Accounts and School Management Dashboard",
+    },
+    {
+      property: "og:site_name",
+      content: "HigherCareer Academy",
+    },
+    {
+      property: "og:locale",
+      content: "en_TZ",
+    },
+    // Twitter
+    {
+      name: "twitter:card",
+      content: "summary_large_image",
+    },
+    {
+      name: "twitter:site",
+      content: "@highercareer",
+    },
+    {
+      name: "twitter:creator",
+      content: "@highercareer",
+    },
+    {
+      name: "twitter:title",
+      content: "HCA | Accounts and School Management System",
+    },
+    {
+      name: "twitter:description",
+      content:
+        "Lightning-fast, secure school management system built with Qwik. For students, teachers, parents, and admins.",
+    },
+    {
+      name: "twitter:image",
+      content: "https://hca-account.vercel.app/og-image.webp",
+    },
+    {
+      name: "twitter:image:alt",
+      content: "HigherCareer Academy - School Management System",
     },
   ],
-
+  links: [
+    {
+      rel: "canonical",
+      href: "https://hca-account.vercel.app/",
+    },
+    {
+      rel: "icon",
+      href: "/favicon.ico",
+      type: "image/x-icon",
+    },
+  ],
 };
