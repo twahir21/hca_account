@@ -1,4 +1,4 @@
-import { component$, useSignal,  useTask$, useOnDocument, $ } from '@builder.io/qwik';
+import { component$, useSignal,  useTask$, useVisibleTask$ } from '@builder.io/qwik';
 
 type SeriesPoint = number | null;
 
@@ -14,7 +14,7 @@ export const AcademicTrendChart = component$((props: AcademicTrendChartProps) =>
   const chartRef = useSignal<any>(null);
 
   // Build chart when visible on the client
-  useOnDocument("DOMContentLoaded", $(async () => {
+  useVisibleTask$(async () => {
     const ApexCharts = (await import('apexcharts')).default;
 const options: ApexCharts.ApexOptions = {
   chart: {
@@ -98,7 +98,7 @@ const options: ApexCharts.ApexOptions = {
       chartRef.value?.destroy();
       chartRef.value = null;
     };
-  }));
+  });
 
   // If props change (labels/data), update the chart on the client
   useTask$(({ track }) => {
