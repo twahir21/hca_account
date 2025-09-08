@@ -1,9 +1,9 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { DocumentHead, Link } from "@builder.io/qwik-city";
 import Logo from "~/images/logo.png?jsx";
-import { TopBar } from "~/components/ui/topBar";
 import { MenuParent } from "./layout/menuParent";
 import { ParentHome } from "./layout/ParentHome";
+import { TopBar } from "~/components/ui/topBar";
 
 export default component$(() => {
     const selectedSection = useSignal<string>('home');
@@ -31,7 +31,7 @@ export default component$(() => {
                 <MenuParent selectedSection={selectedSection}/>
             </aside>
             <main class="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-gray-100 overflow-scroll">
-                <TopBar />
+                <TopBar username="Salim Amir" role="Parent" />
                 {/* Parent Sections  */}
                 {SectionMap[selectedSection.value] ?? (
                   <p class="p-6 text-gray-500">Section not found</p>

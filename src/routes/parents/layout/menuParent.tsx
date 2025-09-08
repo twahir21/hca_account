@@ -35,11 +35,6 @@ const menuItems = [
             section: "events"
         },
         {
-            icon: "/assets/message.png",
-            label: "Messages",
-            section: "messages"
-        },
-        {
             icon: "/assets/announcement.png",
             label: "Announcements",
             section: "announcements"

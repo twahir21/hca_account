@@ -4,7 +4,12 @@ import Message from "~/images/message.png?jsx";
 import Announcement from "~/images/announcement.png?jsx";
 import Avatar from "~/images/avatar.png?jsx";
 
-export const TopBar = component$(() => {
+interface TopBarProps {
+    role: string;
+    username: string;
+}
+
+export const TopBar = component$<TopBarProps>(({ username, role }) => {
     return <>
     <nav class="flex items-center justify-between p-4">
         {/* SEARCH BAR */}
@@ -25,8 +30,8 @@ export const TopBar = component$(() => {
                 </div>
             </div>
             <div class="flex flex-col">
-                <span class="text-xs leading-3 font-medium">Twahir Sudy</span>
-                <span class="text-[12px] text-gray-500 text-right">Admin</span>
+                <span class="text-xs leading-3 font-medium"> {username} </span>
+                <span class="text-[12px] text-gray-500 text-right"> {role} </span>
             </div>
 
             <Avatar class="w-[36px] h-[36px] rounded-full cursor-pointer"/>

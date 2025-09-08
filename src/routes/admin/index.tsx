@@ -2,9 +2,10 @@ import { component$, useSignal } from "@builder.io/qwik";
 import { DocumentHead, Link } from "@builder.io/qwik-city";
 import Logo from "~/images/logo.png?jsx";
 import { Menu } from "~/components/ui/menu";
-import { TopBar } from "~/components/ui/topBar";
 import { AdminHome } from "./layout/adminHome";
 import { Footer } from "~/components/includes/footer";
+import { TopBar } from "~/components/ui/topBar";
+import { BulkSMS } from "./layout/messages";
 
 export default component$(() => {
     const selectedSection = useSignal<string>('home');
@@ -12,6 +13,7 @@ export default component$(() => {
     // Map of section -> component
     const SectionMap: Record<string, any> = {
       home: <AdminHome />,
+      messages: <BulkSMS />
     };
 
     return <>
@@ -34,7 +36,9 @@ export default component$(() => {
             </aside>
             {/* 2. Main Content  */}
             <main class="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-gray-100 overflow-scroll">
-                <TopBar />
+              
+                <TopBar username="Twahir Sudy" role="Admin" />
+
                 {/* Admin Sections  */}
                 {SectionMap[selectedSection.value] ?? (
                   <p class="p-6 text-gray-500">Section not found</p>
