@@ -2,6 +2,7 @@ import { component$, useSignal } from "@builder.io/qwik";
 
 export const BulkSMS = component$(() => {
       const currentChar = useSignal("");
+      const activeTab = useSignal<'contact' | 'group' | 'upload'>('contact');
     
       const charLimit = 160;
     return <>
@@ -75,14 +76,14 @@ export const BulkSMS = component$(() => {
                     <h2 class="text-xl font-semibold text-slate-800">Compose SMS</h2>
                     <div class="text-sm text-slate-400"><span class="hidden sm:inline">Characters:</span> {currentChar.value.length}/{charLimit}</div>
                 </div>
-
+                    <h3 class="pt-3 text-gray-400">1. Message : </h3>
                 <textarea
                     placeholder="Type your message here..."
                     onInput$={(e) => currentChar.value = (e.target as HTMLInputElement).value.slice(0, charLimit)}
                     value={currentChar.value}
                     maxLength={charLimit}
                     required
-                    class={`mt-4 w-full rounded-xl p-4 resize-none h-36 border-2 ${currentChar.value.length >= charLimit ? 'text-red-500 border-red-500' : 'text-black border-slate-200'} focus:outline-none focus:ring-2 focus:ring-sky-200`}
+                    class={`mt-4 w-full rounded-xl px-4 py-2 resize-none h-36 border-2 ${currentChar.value.length >= charLimit ? 'text-red-500 border-red-500' : 'text-black border-slate-200'} focus:outline-none focus:ring-2 focus:ring-sky-200`}
                 />
 
                 <div class="flex justify-end p-3">
@@ -90,6 +91,94 @@ export const BulkSMS = component$(() => {
                         class="bg-purple-100 px-3 py-1 border-2 border-purple-600 rounded-xl text-gray-600"
                         onClick$={() => currentChar.value = ""}
                     >Clear</button>
+                </div>
+
+                {/* Send to: */}
+                <div>
+                    <h3 class="pt-3 text-gray-400">2. Send to :</h3>
+   <div class="w-full max-w-3xl mx-auto">
+      {/* Tabs */}
+      <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-3">
+        {['contact', 'group', 'upload'].map((tab) => (
+          <button
+            key={tab}
+            class={`px-3 py-2 border-b-2 capitalize transition-colors duration-200
+              ${activeTab.value === tab
+                ? 'border-sky-500 text-sky-700 font-semibold'
+                : 'border-transparent text-slate-600 hover:text-sky-500'}`}
+            onClick$={() => (activeTab.value = tab as any)}
+          >
+            {tab === 'upload' ? 'Upload XLSX' : tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      <div class="mt-6">
+        {activeTab.value === 'contact' && (
+          <div class="space-y-4">
+            {/* Search */}
+            <input
+              type="text"
+              placeholder="Search contact..."
+              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+            {/* Dropdowns */}
+            <div class="max-h-64 overflow-y-auto space-y-2 pr-2">
+              {[...Array(6)].map((_, i) => (
+                <select
+                  key={i}
+                  class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                >
+                  <option value="">Dropdown {i + 1}</option>
+                  <option value="a">Option A</option>
+                  <option value="b">Option B</option>
+                </select>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab.value === 'group' && (
+          <div class="space-y-4">
+            {/* Search */}
+            <input
+              type="text"
+              placeholder="Search group..."
+              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+            {/* Dropdowns */}
+            <div class="max-h-64 overflow-y-auto space-y-2 pr-2">
+              {[...Array(6)].map((_, i) => (
+                <select
+                  key={i}
+                  class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                >
+                  <option value="">Dropdown {i + 1}</option>
+                  <option value="a">Option A</option>
+                  <option value="b">Option B</option>
+                </select>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab.value === 'upload' && (
+          <div class="flex flex-col items-center justify-center border-2 border-dashed border-sky-400 rounded-xl p-8 bg-sky-50 hover:bg-sky-100 transition-colors duration-200">
+            <i class="fas fa-file-excel text-green-600 text-xl mb-2"></i>
+            <p class="text-sky-700 font-semibold">Drag & Drop your XLSX file here</p>
+            <p class="text-slate-500 text-sm mt-1">or click to browse</p>
+            <input type="file" accept=".xlsx" class="hidden" id="file-upload" />
+            <label
+              for="file-upload"
+              class="mt-4 cursor-pointer bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition-colors"
+            >
+              Choose File
+            </label>
+          </div>
+        )}
+      </div>
+    </div>
                 </div>
                 </div>
             </div>
