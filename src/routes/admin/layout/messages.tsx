@@ -130,7 +130,7 @@ export const BulkSMS = component$(() => {
                   key={i}
                   class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
                 >
-                  <option value="">Dropdown {i + 1}</option>
+                  <option value="">Dropdown 3</option>
                   <option value="a">Option A</option>
                   <option value="b">Option B</option>
                 </select>
@@ -154,7 +154,7 @@ export const BulkSMS = component$(() => {
                   key={i}
                   class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
                 >
-                  <option value="">Dropdown {i + 1}</option>
+                  <option value="">Dropdown 4 </option>
                   <option value="a">Option A</option>
                   <option value="b">Option B</option>
                 </select>
