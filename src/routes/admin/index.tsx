@@ -3,7 +3,6 @@ import { DocumentHead, Link } from "@builder.io/qwik-city";
 import Logo from "~/images/logo.png?jsx";
 import { Menu } from "~/components/ui/menu";
 import { AdminHome } from "./layout/adminHome";
-import { Footer } from "~/components/includes/footer";
 import { TopBar } from "~/components/ui/topBar";
 import { BulkSMS } from "./layout/messages";
 
@@ -45,8 +44,6 @@ export default component$(() => {
                 )}
             </main>
         </div>
-        {/* 3. Footer  */}
-        <Footer />
     </>
 });
 
