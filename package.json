@@ -44,6 +44,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
     "apexcharts": "^5.3.4",
+    "lucide-qwik": "^1.0.0",
     "tailwindcss": "^4.1.12"
   }
 }

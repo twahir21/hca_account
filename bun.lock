@@ -6,6 +6,7 @@
       "dependencies": {
         "@tailwindcss/vite": "^4.1.12",
         "apexcharts": "^5.3.4",
+        "lucide-qwik": "^1.0.0",
         "tailwindcss": "^4.1.12",
       },
       "devDependencies": {
@@ -1386,6 +1387,8 @@
     "lowercase-keys": ["lowercase-keys@2.0.0", "", {}, "sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA=="],
 
     "lru-cache": ["lru-cache@7.18.3", "", {}, "sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA=="],
+
+    "lucide-qwik": ["lucide-qwik@1.0.0", "", {}, "sha512-AEcUfXOiXL4/MWf2kz/MPdjs2ydveetJ5szziFsb0kWhXQbJpXLg9xI9oOtuse0gxf0QiQswNhiAnm3Dv2PO6A=="],
 
     "magic-string": ["magic-string@0.30.18", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-yi8swmWbO17qHhwIBNeeZxTceJMeBvWJaId6dyvTSOwTipqeHhMhOrz6513r1sOKnpvQ7zkhlG8tPrpilwTxHQ=="],
 
