@@ -1,6 +1,8 @@
-// // define routeLoaders for fetching API 
-// // define routeAction for posting to API
-// // this is SSR not executed by browser
+// define routeLoaders for fetching API 
+// define routeAction for posting to API
+// this is SSR not executed by browser
+
+// import { routeAction$ } from "@builder.io/qwik-city";
 
 // import { routeAction$, routeLoader$, z, zod$ } from "@builder.io/qwik-city";
 
@@ -27,3 +29,17 @@
 //     password: z.string().min(3)
 //   })
 // )
+
+// export const useFileAPI = routeAction$(async (file) => {
+//     console.log("DATA: ", file);
+//   const formData = new FormData();
+//   formData.append("file", file); // "file" must match the body field name in Elysia
+
+//   const response = await fetch("http://localhost:3000/file", {
+//     method: "POST",
+//     body: formData,
+//   });
+
+//   const data = await response.json();
+//   console.log(data);
+// })

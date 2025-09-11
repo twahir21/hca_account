@@ -11,23 +11,56 @@ export const BulkSMS = component$(() => {
         scheduleStart: "" as string,
         scheduleEnd: "" as string,
         frequency: "once" as 'once' |'daily'|'weekly'|'monthly',
-    ui: {
-      contactQuery: '',
-      groupQuery: '',
-      recentQuery: ''
-    },
+        ui: {
+          contactQuery: '',
+          groupQuery: '',
+          recentQuery: ''
+        },
 
-    recent: [
-      { id: 1, text: 'School closed on Monday - holiday reminder', date: '2025-09-01', to: 'All Parents' },
-      { id: 2, text: 'Fee reminder: pay before 10th', date: '2025-09-05', to: 'Grade 3' },
-      { id: 3, text: 'Welcome to new term!', date: '2025-08-20', to: 'All Contacts' }
-    ],
+        recent: [
+          { id: 1, text: 'School closed on Monday - holiday reminder', date: '2025-09-01', to: 'All Parents' },
+          { id: 2, text: 'Fee reminder: pay before 10th', date: '2025-09-05', to: 'Grade 3' },
+          { id: 3, text: 'Welcome to new term!', date: '2025-08-20', to: 'All Contacts' }
+        ],
       });
 
       const setFrequency = $((f: 'once' |'daily'|'weekly'|'monthly') => (state.frequency = f));
-      
-    
+
       const charLimit = 160;
+
+      const fileName = useSignal<string>("");
+
+      const handleDrop = $((event: DragEvent) => {
+        event.preventDefault();
+        const file = event.dataTransfer?.files[0];
+        if (file && file.name.endsWith(".xlsx")) {
+          fileName.value = file.name;
+        }
+      });
+
+      const handleDragOver = $((event: DragEvent) => {
+        event.preventDefault();
+      });
+
+      // Server forms
+      const handleFileChange = $(async (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const file = target.files?.[0];
+        fileName.value = file ? file.name : "";
+        
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("http://localhost:3000/file", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        console.log("Server response:", data);
+      });
     return <>
     <div class="flex flex-col gap-4 w-full p-4">
         {/* Top  */}
@@ -188,18 +221,46 @@ export const BulkSMS = component$(() => {
                           )}
 
                           {activeTab.value === 'upload' && (
-                            <div class="flex flex-col items-center justify-center border-2 border-dashed border-sky-400 rounded-xl p-8 bg-sky-50 hover:bg-sky-100 transition-colors duration-200">
+                          <div class="space-y-3">
+                            {/* Drop Zone */}
+                            <div
+                              class="flex flex-col items-center justify-center border-2 border-dashed border-sky-400 rounded-xl p-8 bg-sky-50 hover:bg-sky-100 transition-colors duration-200"
+                              onDrop$={handleDrop}
+                              onDragOver$={handleDragOver}
+                            >
                               <i class="fas fa-file-excel text-green-600 text-xl mb-2"></i>
                               <p class="text-sky-700 font-semibold">Drag & Drop your XLSX file here</p>
                               <p class="text-slate-500 text-sm mt-1">or click to browse</p>
-                              <input type="file" accept=".xlsx" class="hidden" id="file-upload" />
+
+                              <input
+                                type="file"
+                                accept=".xlsx"
+                                id="file-upload"
+                                class="hidden"
+                                onChange$={handleFileChange}
+                              />
                               <label
                                 for="file-upload"
                                 class="mt-4 cursor-pointer bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition-colors"
                               >
-                                Choose File
+                                {!fileName.value.length ? "Choose File" : "Change File"}
                               </label>
                             </div>
+
+                            {/* Filename preview */}
+                            {fileName.value && (
+                              <div class="text-sm text-gray-600">Selected file: {fileName.value}</div>
+                            )}
+
+                            {/* Example download link */}
+                            <a
+                              href="/example.xlsx"
+                              download
+                              class="inline-block text-sm text-blue-600 hover:underline"
+                            >
+                              Download example.xlsx
+                            </a>
+                          </div>
                           )}
                         </div>
                     </div>
