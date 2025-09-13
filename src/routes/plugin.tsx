@@ -2,6 +2,9 @@
 // define routeAction for posting to API
 // this is SSR not executed by browser
 
+import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
+import { useSMSAPI } from "~/api/sms.api";
+
 // import { routeAction$ } from "@builder.io/qwik-city";
 
 // import { routeAction$, routeLoader$, z, zod$ } from "@builder.io/qwik-city";
@@ -43,3 +46,6 @@
 //   const data = await response.json();
 //   console.log(data);
 // })
+
+export const useBulkSMSPost = routeAction$(async (data) => await useSMSAPI.post(data))
+export const useBulkSMSGet = routeLoader$(async() => await useSMSAPI.get());

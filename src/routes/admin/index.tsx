@@ -5,15 +5,20 @@ import { Menu } from "~/components/ui/menu";
 import { AdminHome } from "./layout/adminHome";
 import { TopBar } from "~/components/ui/topBar";
 import { BulkSMS } from "./layout/messages";
+import { useBulkSMSGet } from "../plugin";
 
 export default component$(() => {
+    // routeLoaders 
+    const totalSMS = useBulkSMSGet();
+
     const selectedSection = useSignal<string>('home');
 
     // Map of section -> component
     const SectionMap: Record<string, any> = {
       home: <AdminHome />,
-      messages: <BulkSMS />
+      messages: <BulkSMS count={totalSMS.value.count} />
     };
+
 
     return <>
         <div class="h-screen flex">
