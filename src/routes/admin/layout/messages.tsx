@@ -1,10 +1,10 @@
 import { $, component$, useSignal, useStore } from "@builder.io/qwik";
-import { SendIcon } from "lucide-qwik";
 import { links } from "~/const/api.const";
 import { bulkLoaderProp, fileResponseTypes } from "../types/adminTypes";
 import { SearchInput } from "~/components/ui/Search";
 import { Form } from "@builder.io/qwik-city";
-import { useBulkSMSPost } from "~/routes/plugin";
+import { useContactPost } from "~/routes/plugin";
+import { Pagination } from "~/components/ui/pagination";
 
 export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
       const currentChar = useSignal("");
@@ -86,8 +86,48 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
         }
       });
 
+      
+        const showContactModal = useSignal(false);
+        const showGroupModal = useSignal(false);
+      
+        // Dummy contacts
+        const contacts = [
+          { id: 1, name: "Alice Johnson", phone: "123-456-7890", role: "parent" },
+          { id: 2, name: "Bob Smith", phone: "987-654-3210", role: "admin" },
+          { id: 3, name: "Charlie Brown", phone: "555-123-4567", role: "teacher" },
+        ];
+
+        const contactSelection = useStore({
+          selectAll: false,
+          selected: {} as Record<number, boolean>,
+        });
+
+        // Role → color mapping
+        const roleColors: Record<string, { bg: string; text: string }> = {
+          parent: { bg: "bg-blue-100", text: "text-blue-500" },
+          admin: { bg: "bg-red-100", text: "text-red-500" },
+          teacher: { bg: "bg-green-100", text: "text-green-500" },
+        };
+
+      
+        // Form states
+        const groupForm = useStore({ name: "", search: "", selected: [] as number[] });
+      
+      
+        const handleGroupSubmit = $(() => {
+          console.log("New group:", {
+            name: groupForm.name,
+            members: contacts.filter((c) => groupForm.selected.includes(c.id)),
+          });
+          showGroupModal.value = false;
+        });
+
+
+      
+
       // Server forms
-      const bulkSMSForm = useBulkSMSPost();
+      // const bulkSMSForm = useBulkSMSPost();
+      const contactForm = useContactPost();
 
     return <>
     <div class="flex flex-col gap-4 w-full p-4">
@@ -156,12 +196,13 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
         <div class="flex flex-col md:flex-row w-full gap-5">
             <div class="w-full md:w-2/3 border-2 border-sky-500 rounded-2xl">
               {/* Form  */}
-                <Form action={bulkSMSForm}>
+                {/* <Form action={bulkSMSForm}> */}
                   <div class="bg-white p-6 rounded-2xl shadow-lg ring-1 ring-slate-100">
                   <div class="flex items-start justify-between">
                       <h2 class="text-xl font-semibold text-slate-800">Compose SMS</h2>
                       <div class="text-sm text-slate-400"><span class="hidden sm:inline">Characters:</span> {currentChar.value.length}/{charLimit}</div>
                   </div>
+                  
                   <h3 class="pt-3 text-gray-400">1. Message : </h3>
                   {/* Message input  */}
                   <textarea
@@ -169,7 +210,6 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
                       onInput$={(e) => currentChar.value = (e.target as HTMLInputElement).value.slice(0, charLimit)}
                       value={currentChar.value}
                       maxLength={charLimit}
-                      required
                       name="message"
                       class={`mt-4 w-full rounded-xl px-4 py-2 resize-none h-36 border-2 ${currentChar.value.length >= charLimit ? 'text-red-500 border-red-500' : 'text-black border-slate-200'} focus:outline-none focus:ring-2 focus:ring-sky-200`}
                   />
@@ -231,24 +271,107 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
                                   <div class="flex-grow border-t border-slate-300"></div>
                                 </div>
 
-                                {/* Search Input */}
+                                {/* Import and Add contact buttons */}
                                 <div>
                                   <label class="block text-sm font-medium text-slate-600 mb-1">
-                                    Search Contacts : 
+                                    Contacts : 
                                   </label>
+                                  <div class="flex justify-end gap-5 mb-5">
+                                    <button 
+                                      class="border border-yellow-500 bg-yellow-50 px-4 rounded-xl cursor-pointer"
+                                       >
+                                        <i class="fas fa-download"></i> Import
+                                    </button>
+                                    <button class="border border-purple-500 bg-purple-50 px-4 py-2 rounded-xl cursor-pointer"
+                                     onClick$={() => (showContactModal.value = true)}>
+                                      <i class="fas fa-add"></i> Add Contact
+                                    </button>
+                                  </div>
+                                  {/* Search Input */}
                                   <SearchInput placeholder="Enter by contacts ..." />
                                 </div>
 
-                                {/* Dropdown List */}
-                                <div class="max-h-64 overflow-y-auto space-y-2 pr-2 border border-slate-200 rounded-lg p-2 bg-slate-50">
-                                  {/* Example items */}
-                                  <div class="p-2 rounded-md bg-white shadow-sm hover:bg-sky-50 cursor-pointer">
-                                    John Doe - 255700111222
-                                  </div>
-                                  <div class="p-2 rounded-md bg-white shadow-sm hover:bg-sky-50 cursor-pointer">
-                                    Jane Smith - 255700333444
-                                  </div>
+                                {/* Contact fields lists */}
+                                <div class="overflow-x-auto border rounded-lg">
+                                  <table class="w-full text-sm">
+                                    <thead>
+                                      <tr class="text-left text-gray-600 border-b bg-gray-50">
+                                        <th class="py-3 px-4 font-medium">
+                                          <input
+                                            type="checkbox"
+                                            class="mr-3 w-4 h-4"
+                                            checked={contactSelection.selectAll}
+                                            onChange$={(e) => {
+                                              const checked = (e.target as HTMLInputElement).checked;
+                                              contactSelection.selectAll = checked;
+                                              contacts.forEach((c) => (contactSelection.selected[c.id] = checked));
+                                            }}
+                                          />
+                                          Name
+                                        </th>
+                                        <th class="py-3 px-4 font-medium">Phone Number</th>
+                                        <th class="py-3 px-4 font-medium text-right">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                      {contacts.map((i) => {
+                                        const roleColor = roleColors[i.role] || roleColors.parent;
+                                        return (
+                                          <tr key={i.id} class="hover:bg-gray-50 transition">
+                                            <td class="py-4 px-4">
+                                              <div class="flex items-center">
+                                                <input
+                                                  type="checkbox"
+                                                  class="mr-3 w-4 h-4"
+                                                  checked={contactSelection.selected[i.id] || false}
+                                                  onChange$={(e) => {
+                                                    const checked = (e.target as HTMLInputElement).checked;
+                                                    contactSelection.selected[i.id] = checked;
+                                                    // If any row is unchecked, uncheck selectAll
+                                                    if (!checked) contactSelection.selectAll = false;
+                                                    // If all are checked, set selectAll
+                                                    else if (
+                                                      contacts.every((c) => contactSelection.selected[c.id])
+                                                    ) {
+                                                      contactSelection.selectAll = true;
+                                                    }
+                                                  }}
+                                                />
+                                                <div
+                                                  class={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${roleColor.bg}`}
+                                                >
+                                                  <i class={`fas fa-user ${roleColor.text}`} />
+                                                </div>
+                                                <div>
+                                                  <p class="font-semibold">{i.name}</p>
+                                                  <p class="text-gray-500 text-xs capitalize">{i.role}</p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td class="py-4 px-4">
+                                              <div class="flex items-center text-gray-700">
+                                                <i class="fas fa-phone text-gray-400 mr-2" />
+                                                {i.phone}
+                                              </div>
+                                            </td>
+                                            <td class="py-4 px-4 text-right">
+                                              <div class="flex justify-end gap-2">
+                                                <button class="w-8 h-8 flex items-center justify-center text-green-500 hover:bg-green-100 rounded-full">
+                                                  <i class="fas fa-pen"></i>
+                                                </button>
+                                                <button class="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-red-100 rounded-full">
+                                                  <i class="fas fa-trash"></i>
+                                                </button>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
+                                    </tbody>
+                                  </table>
                                 </div>
+                                {/* Pagination  */}
+                                <Pagination />
                               </div>
                             )}
 
@@ -396,12 +519,13 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
                           cursor-pointer"
                     type="submit"
                   >
-                    <SendIcon /> Send SMS
+                    <i class="fas fa-paper-plane"></i> Send SMS
                   </button>
                   </div>
-                </Form>
+                {/* </Form> */}
             </div>
             <div class="w-full md:w-1/3">
+              <div class="flex flex-col gap-10">
               {/* recent messages column */}
               <div>
                 <div class="p-5 rounded-2xl shadow ring-1 ring-slate-100 border-2 border-sky-500 bg-sky-50">
@@ -426,10 +550,133 @@ export const BulkSMS = component$<bulkLoaderProp>(({ count }) => {
                     {state.recent.length === 0 && <div class="text-center text-sm text-slate-400">No recent messages</div>}
                   </div>
                 </div>
-              </div>
+              </div> 
+              </div>                      
             </div>
         </div>
 
     </div>
+
+    {/* MODALS  */}
+    {/* Contact Modal */}
+    {showContactModal.value && (
+      <div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-96 relative">
+          {/* Header */}
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Add Contact</h2>
+            <i
+              class="fas fa-times-circle text-gray-500 cursor-pointer hover:text-gray-700 transition"
+              onClick$={() => (showContactModal.value = false)}
+            ></i>
+          </div>
+          <Form action={contactForm}>
+          {/* Name Field */}
+          <label class="text-gray-500 text-sm mb-1 block">Name : </label>
+          <div class="relative mb-3">
+            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              class="w-full border rounded px-10 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none"
+              placeholder="e.g. Salim Juma"
+              name="name"
+            />
+          </div>
+
+          {/* Phone Field */}
+          <label class="text-gray-500 text-sm mb-1 block">Phone : </label>
+          <div class="relative mb-3">
+            <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              class="w-full border rounded px-10 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none"
+              placeholder="e.g. 2556123456789"
+              name="phone"
+            />
+          </div>
+
+          {/* Actions */}
+          <div class="flex justify-end gap-3 mt-4">
+            <button
+              class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
+              onClick$={() => (showContactModal.value = false)}
+            >
+              Cancel
+            </button>
+            <button
+              class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition cursor-pointer"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+          </Form>
+        </div>
+      </div>
+    )}
+
+
+    {/* Group Modal */}
+    {showGroupModal.value && (
+      <div class="fixed inset-0 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-[28rem]">
+          <h2 class="text-lg font-semibold mb-4">Add Group</h2>
+          <input
+            class="w-full border rounded px-3 py-2 mb-3"
+            placeholder="Group Name"
+            name="name"
+          />
+
+          {/* Search bar */}
+          <input
+            class="w-full border rounded px-3 py-2 mb-3"
+            placeholder="Search Contacts"
+            name="search"
+          />
+
+          {/* Contact list */}
+          <div class="max-h-40 overflow-y-auto border rounded p-2 mb-3">
+            {contacts
+              .filter((c) =>
+                c.name.toLowerCase().includes(groupForm.search.toLowerCase())
+              )
+              .map((c) => (
+                <label
+                  key={c.id}
+                  class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 rounded cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={groupForm.selected.includes(c.id)}
+                    onChange$={() => {
+                      if (groupForm.selected.includes(c.id)) {
+                        groupForm.selected = groupForm.selected.filter(
+                          (id) => id !== c.id
+                        );
+                      } else {
+                        groupForm.selected = [...groupForm.selected, c.id];
+                      }
+                    }}
+                  />
+                  {c.name} ({c.phone})
+                </label>
+              ))}
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button
+              class="px-4 py-2 bg-gray-200 rounded"
+              onClick$={() => (showGroupModal.value = false)}
+            >
+              Cancel
+            </button>
+            <button
+              class="px-4 py-2 bg-green-600 text-white rounded"
+              onClick$={handleGroupSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </>;
 });

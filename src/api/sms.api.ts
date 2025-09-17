@@ -2,7 +2,7 @@ import { JSONObject } from "@builder.io/qwik-city";
 import { links } from "~/const/api.const";
 
 export const useSMSAPI = {
-    post: async (data: JSONObject) => {
+    verifyExcel: async (data: JSONObject) => {
         try {
             console.log("DATA: ", data)
             const res = await fetch(`${links.serverLink}/sms/post`, {
@@ -25,7 +25,7 @@ export const useSMSAPI = {
             }
         }
     },
-    get: async (): Promise<{
+    getTotalSMS: async (): Promise<{
         success: boolean;
         message: string;
         count? : number;
@@ -50,5 +50,33 @@ export const useSMSAPI = {
                         "Something wrong occured in get total sms"
             }
         }
+    },
+    contactPost: async (data: JSONObject): Promise<{
+        success: boolean;
+        message: string;
+    }> => {
+        try {
+            const res = await fetch(`${links.serverLink}/contacts/post`, {
+                method: "POST",
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            const ans = await res.json();
+
+            console.log("Server res: ", ans)
+            return {
+                success: true,
+                message: "good",
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error instanceof Error ? 
+                        error.message : 
+                        "Something wrong occured in get total sms"
+            }
+        }        
     }
 }

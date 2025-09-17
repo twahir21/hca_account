@@ -1,4 +1,4 @@
 export const links = {
-    serverLink: "https://api.highercareer.academy",
+    serverLink: "http://localhost:8080",
     clientLink: "https://accounts.highercareer.academy"
 }

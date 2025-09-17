@@ -47,5 +47,9 @@ import { useSMSAPI } from "~/api/sms.api";
 //   console.log(data);
 // })
 
-export const useBulkSMSPost = routeAction$(async (data) => await useSMSAPI.post(data))
-export const useBulkSMSGet = routeLoader$(async() => await useSMSAPI.get());
+// bulk SMS
+export const useBulkSMSPost = routeAction$(async (data) => await useSMSAPI.verifyExcel(data))
+export const useBulkSMSGet = routeLoader$(async() => await useSMSAPI.getTotalSMS());
+
+// create contact form
+export const useContactPost = routeAction$(async (data) => await useSMSAPI.contactPost(data));
