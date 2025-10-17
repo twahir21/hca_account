@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "HCA App",
+  "short_name": "Accounts for HCA",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#333",
+  "description": "Secure login portal for HigherCareer Academy’s Accounts and School Management System."
+}
