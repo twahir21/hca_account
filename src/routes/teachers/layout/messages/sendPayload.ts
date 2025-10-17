@@ -1,4 +1,4 @@
-import { validRows } from "../../types/adminTypes";
+import { validRows } from "../../types/TeacherTypes";
 
 type ContactPayload = {
   type: "contact";
