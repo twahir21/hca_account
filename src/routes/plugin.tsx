@@ -151,6 +151,12 @@ export const useOTP = routeAction$(async (data, { cookie }) => {
   return otpReturn;
 });
 
+export const useResendOTP = routeAction$(async (data, { cookie }) => { 
+  const sessionId = cookie.get("sessionId");
+  if (!sessionId) return { success: false, message: "Session ID not found" };
+  return await LoginAPI.resendOTP({ sessionId: sessionId?.value });
+});
+
 // if sessionId exists redirect to otp
 export const onRequest: RequestHandler = async ({ url, redirect, cookie }) => {
   const sessionId = cookie.get("sessionId");

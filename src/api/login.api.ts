@@ -68,5 +68,29 @@ export const LoginAPI = {
             }
         }
     },
+    resendOTP: async ({  sessionId }: { sessionId?: string }): Promise<Api> => {
+        try {
+
+            const payload = {
+                sessionId: sessionId ? sessionId : ""
+            }
+            
+            const result: Api = await fetch(`${links.serverLink}/verify-OTP`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            }).then(r => r.json());
+
+            return result
+
+        } catch (error) {
+            return {
+                success: false,
+                message: error instanceof Error ? 
+                            error.message :
+                            "Something went wrong in resend OTP",
+            }
+        }
+    },
     
 }

@@ -10,8 +10,8 @@ import { component$, PropFunction, useSignal, useVisibleTask$, $, useTask$ } fro
 import { CountdownTimer } from './count';
 import { HomeNav } from '~/components/includes/homeNav';
 import { Footer } from '~/components/includes/footer';
-import { Form } from '@builder.io/qwik-city';
-import { useOTP } from '../plugin';
+import { DocumentHead, Form } from '@builder.io/qwik-city';
+import { useOTP, useResendOTP } from '../plugin';
 import { Toast } from '~/components/ui/Toast';
 
 export interface OTPInputProps {
@@ -153,6 +153,7 @@ export default component$((props: OTPInputProps) => {
 
   // server forms
   const sendOTP = useOTP();
+  const resendOTP = useResendOTP();
 
   // 1. toast consts
   const isToastOpen = useSignal(false);
@@ -169,6 +170,10 @@ export default component$((props: OTPInputProps) => {
       const form = track(() => sendOTP.value); // track sendOTP
       if (form) {
           showToast({ toastTypeParam: sendOTP.value?.success ? 'success' : 'error', toastMsg: sendOTP.value?.message ?? "Something went wrong!"}); // show toast automatically on change
+      }
+      track(() => resendOTP.value); // track resendOTP
+      if (resendOTP.value) {
+          showToast({ toastTypeParam: resendOTP.value?.success ? 'success' : 'error', toastMsg: resendOTP.value?.message ?? "Something went wrong!"}); // show toast automatically on change
       }
   });
 
@@ -222,7 +227,10 @@ export default component$((props: OTPInputProps) => {
 
                 <div class="mt-4">
                     <p class="text-gray-500 text-center">
-                        Don't have an OTP? <a href="/otp" class="text-[#4a90e2]">Resend</a>
+                        Don't have an OTP? <span class="text-[#4a90e2] hover:underline hover:cursor-pointer"
+                        onClick$={() => {
+                          resendOTP.submit();
+                        }}>Resend</span>
                     </p>
                 </div>
 
@@ -254,3 +262,55 @@ export default component$((props: OTPInputProps) => {
   );
 });
 
+export const head: DocumentHead = {
+  title: 'OTP | Higher Career Academy (HCA)',
+  meta: [
+    {
+      name: 'description',
+      content:
+      'OTP for Higher Career Academy. Easily access all school management tools in one secure portal.',
+    },
+    {
+      name: 'robots',
+      content: 'noindex, nofollow', // keep search engines from indexing
+    },
+    {
+      name: 'author',
+      content: 'Higher Career Academy',
+    },
+
+    // Open Graph (for sharing)
+    {
+      property: 'og:title',
+      content: 'OTP | Higher Career Academy (HCA)',
+    },
+    {
+      property: 'og:description',
+      content:
+        'Log in to the Higher Career Academy Teachers Dashboard to manage child’s education, schedules, and activities securely.',
+    },
+    {
+      property: 'og:type',
+      content: 'website',
+    },
+    {
+      property: 'og:site_name',
+      content: 'Higher Career Academy',
+    },
+
+    // Twitter card
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      name: 'twitter:title',
+      content: 'OTP | Higher Career Academy',
+    },
+    {
+      name: 'twitter:description',
+      content:
+        'Enter the OTP sent to your phone number to log in to the Higher Career Academy Teachers Dashboard to manage child’s education, schedules, and activities securely.',
+    },
+  ],
+};
