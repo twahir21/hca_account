@@ -12,6 +12,8 @@ interface loginReturn extends Api {
 
 interface verifyOTP extends Api {
     authToken: string;
+    username: string;
+    role: "invalid" | "admin" | "parent" | "teacher"
 }
 
 export const LoginAPI = {
@@ -64,7 +66,9 @@ export const LoginAPI = {
                 message: error instanceof Error ? 
                             error.message :
                             "Something went wrong in login",
-                authToken: ""
+                authToken: "",
+                username: "",
+                role: "invalid"
             }
         }
     },

@@ -2,9 +2,10 @@
 // define routeAction for posting to API
 // this is SSR not executed by browser
 
-import { RequestHandler, routeAction$, routeLoader$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { LoginAPI } from "~/api/login.api";
 import { useSMSAPI } from "~/api/sms.api";
+import { isProduction } from "~/const/api.const";
 
 // import { routeAction$ } from "@builder.io/qwik-city";
 
@@ -103,9 +104,24 @@ export const useGetGroups = routeLoader$(async ({ url }: { url: URL }) => {
 export const useGrpEdit = routeAction$(async (data) => {  return await useSMSAPI.editGroup(data.payload) });
 export const useDeleteGrp = routeAction$(async (data) => { return await useSMSAPI.deleteGrp(data) })
 
-
 // 4. sms anlytics
-export const usesmsAnalytics = routeLoader$(async () => { return await useSMSAPI.smsAnalytics() });
+export const usesmsAnalytics = routeLoader$(async ({ cookie }) => { 
+  const authToken = cookie.get('authToken')?.value || "";
+
+  if (!authToken) {
+    return { 
+      success: false, 
+      message: "Unauthorized", 
+      data: {
+        totalContacts: 0,
+        totalGroups: 0,
+        smsToday: 0
+      }
+    };
+  }
+
+  return await useSMSAPI.smsAnalytics(authToken) 
+});
 
 // 5. Get recent sms
 export const useGetRecentSMS = routeLoader$(async ({ url }: { url: URL }) => { 
@@ -134,7 +150,13 @@ export const useLogin = routeAction$(async (data, { cookie }) => {
   const loginReturn = await LoginAPI.login({ data, sessionId: sessionId?.value });
 
   if (loginReturn.sessionId.length !== 0) {
-    cookie.set("sessionId", loginReturn.sessionId);
+    cookie.set("sessionId", loginReturn.sessionId, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict", // or "strict" if you prefer tighter rules
+      secure: isProduction ? true : false,   // use true if running on HTTPS
+    }
+  );
   } 
   return loginReturn
 });
@@ -145,7 +167,30 @@ export const useOTP = routeAction$(async (data, { cookie }) => {
 
   const otpReturn = await LoginAPI.otp({ otpInput: otp, sessionId: sessionId?.value }); 
   if (otpReturn.authToken) {
-    cookie.set("authToken", otpReturn.authToken);
+    cookie.set("authToken", otpReturn.authToken, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict", // or "strict" if you prefer tighter rules
+      secure: isProduction ? true : false,   // use true if running on HTTPS
+    });
+  }
+
+  if (otpReturn.username) {
+    cookie.set("username", otpReturn.username, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict", // or "strict" if you prefer tighter rules
+      secure: isProduction ? true : false,   // use true if running on HTTPS
+    });
+  }
+
+  if(otpReturn.role) {
+    cookie.set("role", otpReturn.role, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict", // or "strict" if you prefer tighter rules
+      secure: isProduction ? true : false,   // use true if running on HTTPS
+    });
   }
 
   return otpReturn;
@@ -156,22 +201,3 @@ export const useResendOTP = routeAction$(async (data, { cookie }) => {
   if (!sessionId) return { success: false, message: "Session ID not found" };
   return await LoginAPI.resendOTP({ sessionId: sessionId?.value });
 });
-
-// if sessionId exists redirect to otp
-export const onRequest: RequestHandler = async ({ url, redirect, cookie }) => {
-  const sessionId = cookie.get("sessionId");
-  const authToken = cookie.get("authToken");
-
-  console.log("Qwik is fine and sessionId is: ", sessionId?.value)
-
-  // if sessionId exists redirect to otp
-  // if (!url.pathname.startsWith("/otp") && sessionId?.value) {
-  //   console.log("This value hit")
-  //   throw redirect(302, "/otp");
-  // }
-  // if jwt exist go to dashboard
-  if (!url.pathname.startsWith("/admin") && authToken?.value) {
-    console.log("This value hit")
-    throw redirect(302, "/admin");
-  }
-}

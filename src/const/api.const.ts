@@ -1,4 +1,6 @@
+export const isProduction = false;
+
 export const links = {
-    serverLink: "https://api.highercareer.academy",
-    clientLink: "https://accounts.highercareer.academy"
+    serverLink: isProduction ? "https://api.highercareer.academy" : "http://localhost:8080",
+    clientLink: isProduction ? "https://accounts.highercareer.academy" : "http://localhost:5173",
 }
