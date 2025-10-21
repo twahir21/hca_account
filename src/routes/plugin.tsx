@@ -105,22 +105,22 @@ export const useGrpEdit = routeAction$(async (data) => {  return await useSMSAPI
 export const useDeleteGrp = routeAction$(async (data) => { return await useSMSAPI.deleteGrp(data) })
 
 // 4. sms anlytics
-export const usesmsAnalytics = routeLoader$(async ({ cookie }) => { 
-  const authToken = cookie.get('authToken')?.value || "";
+export const usesmsAnalytics = routeLoader$(async () => { 
+  // const authToken = cookie.get('authToken')?.value || "";
 
-  if (!authToken) {
-    return { 
-      success: false, 
-      message: "Unauthorized", 
-      data: {
-        totalContacts: 0,
-        totalGroups: 0,
-        smsToday: 0
-      }
-    };
-  }
+  // if (!authToken) {
+  //   return { 
+  //     success: false, 
+  //     message: "Unauthorized", 
+  //     data: {
+  //       totalContacts: 0,
+  //       totalGroups: 0,
+  //       smsToday: 0
+  //     }
+  //   };
+  // }
 
-  return await useSMSAPI.smsAnalytics(authToken) 
+  return await useSMSAPI.smsAnalytics() 
 });
 
 // 5. Get recent sms

@@ -260,12 +260,12 @@ export const useSMSAPI = {
             }
         }
     },
-    smsAnalytics : async (authToken: string): Promise<smsAnalytics> => {
+    smsAnalytics : async (): Promise<smsAnalytics> => {
         try {
             const res = await fetch(`${links.serverLink}/sms/sms-analytics`, {
                 headers: {
                     'Content-Type' : 'application/json',
-                    'Authorization': `Bearer ${authToken}`
+                    // 'Authorization': `Bearer ${authToken}`
                 }
             })
             const ans: smsAnalytics = await res.json();
