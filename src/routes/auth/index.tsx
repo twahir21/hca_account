@@ -1,6 +1,6 @@
 // File: src/components/login-form.tsx
 import { component$, useSignal, $, useTask$ } from '@builder.io/qwik';
-import { Form, type DocumentHead } from '@builder.io/qwik-city';
+import { Form, useNavigate, type DocumentHead } from '@builder.io/qwik-city';
 // import { useLogin } from '../plugin';
 import { HomeNav } from '~/components/includes/homeNav';
 import { Footer } from '~/components/includes/footer';
@@ -31,10 +31,15 @@ export default component$(() => {
     isToastOpen.value = true;
   });
 
+  const nav = useNavigate();
+
   // 4. Tracking the value
   useTask$(({ track }) => {
     track (() => loginForm.value);
     if (loginForm.value) {
+      if (loginForm.value.success) {
+        nav("/otp");
+      }
       showToast({ toastTypeParam: loginForm.value?.success ? 'success' : 'error', toastMsg: loginForm.value?.message ?? "Something went wrong!"});
     }
   });

@@ -10,7 +10,7 @@ import { component$, PropFunction, useSignal, useVisibleTask$, $, useTask$ } fro
 import { CountdownTimer } from './count';
 import { HomeNav } from '~/components/includes/homeNav';
 import { Footer } from '~/components/includes/footer';
-import { DocumentHead, Form } from '@builder.io/qwik-city';
+import { DocumentHead, Form, useNavigate } from '@builder.io/qwik-city';
 import { useOTP, useResendOTP } from '../plugin';
 import { Toast } from '~/components/ui/Toast';
 
@@ -165,11 +165,15 @@ export default component$((props: OTPInputProps) => {
     toastMessage.value = toastMsg;
     isToastOpen.value = true;
   });
+  const nav = useNavigate();
 
   useTask$(({ track }) => {
       const form = track(() => sendOTP.value); // track sendOTP
       if (form) {
-          showToast({ toastTypeParam: sendOTP.value?.success ? 'success' : 'error', toastMsg: sendOTP.value?.message ?? "Something went wrong!"}); // show toast automatically on change
+        if(sendOTP.value?.success) {
+          nav("/admin")
+        }
+        showToast({ toastTypeParam: sendOTP.value?.success ? 'success' : 'error', toastMsg: sendOTP.value?.message ?? "Something went wrong!"}); // show toast automatically on change
       }
       track(() => resendOTP.value); // track resendOTP
       if (resendOTP.value) {

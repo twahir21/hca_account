@@ -79,7 +79,7 @@ export const LoginAPI = {
                 sessionId: sessionId ? sessionId : ""
             }
             
-            const result: Api = await fetch(`${links.serverLink}/verify-OTP`, {
+            const result: Api = await fetch(`${links.serverLink}/resend-OTP`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
